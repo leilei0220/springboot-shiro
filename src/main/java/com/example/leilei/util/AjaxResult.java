@@ -1,37 +1,49 @@
 package com.example.leilei.util;
 
+/**
+ * 这个类用来返回ajax对象，并且私有化字段，只能通过构造方法赋值
+ *
+ */
 public class AjaxResult {
-    private boolean success = true;
+    private Boolean success = true;
+    private String msg;
 
-    private String message = "操作成功!";
+    private AjaxResult() {
+    }
 
-    //在实际开发中，还有两个属性
-    //private Object data;
-    //private int code;
+    /**
+     * 返回ajax
+     * @return 没有错误就返回这个
+     */
+    public static AjaxResult success(){
+        return new AjaxResult();
+    }
 
+    /**
+     *  返回ajax
+     * @param msg 错误信息
+     * @return 有错误就返回这个
+     */
+    public static AjaxResult error(String msg){
+        AjaxResult ajaxResult = success();;
+        ajaxResult.setSuccess(false);
+        ajaxResult.setMsg(msg);
+        return ajaxResult;
+    }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    private void setSuccess(Boolean success) {
         this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    //成功
-    public AjaxResult(){}
-
-    //失败
-    public AjaxResult(String message){
-        this.success = false;
-        this.message = message;
+    private void setMsg(String msg) {
+        this.msg = msg;
     }
 }

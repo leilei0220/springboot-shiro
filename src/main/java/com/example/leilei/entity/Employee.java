@@ -1,5 +1,6 @@
 package com.example.leilei.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDate;
@@ -42,6 +43,16 @@ public class Employee implements Serializable {
 
     private Long tenant_id;
 
+    @TableField(exist = false) //在数据库没有此列  仅仅作为shiro rememberMe所用字段
+    private Boolean rememberMe = false;
+
+    public Boolean getRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(Boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 
     public Long getId() {
         return id;
