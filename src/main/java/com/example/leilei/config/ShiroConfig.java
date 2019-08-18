@@ -101,8 +101,9 @@ public class ShiroConfig {
      */
     @Bean
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
-
+        //新建一个shirofilterbean工厂
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        //将shiro安全核心对象存入bean工厂
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //配置过滤器
         Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
@@ -120,7 +121,7 @@ public class ShiroConfig {
         //当访问需要认证才能访问的资源，如果没有认证，则跳转到这个资源
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/index");
+      //  shiroFilterFactoryBean.setSuccessUrl("/index");
 
         //当访问需要授权才能访问的资源的时候，如果没有权限，则跳转到这个资源
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
