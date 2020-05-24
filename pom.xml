@@ -16,6 +16,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<docker.image.prefix>registry.cn-chengdu.aliyuncs.com/leileideve/spring-boot-project</docker.image.prefix>
+		<startup.main>com.example.leilei.SpringbootShiroApplication</startup.main>
 	</properties>
 
 	<dependencies>
@@ -61,7 +63,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+<!--			<version>4.12</version>-->
 		</dependency>
 
 		<!--shiro-->
@@ -107,16 +109,76 @@
 	</dependencies>
 
 	<build>
+		<finalName>springboot-shiro</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- 配置 fork 进行热部署支持  -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<fork>true</fork>
+					<includeSystemScope>true</includeSystemScope>
+					<mainClass>${startup.main}</mainClass>
+				</configuration>
+			</plugin>
+			<!-- docker的maven插件，官网：https://github.com/spotify/docker-maven-plugin -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.13</version>
+				<configuration>
+					<!-- 注意imageName一定要是符合正则[a-z0-9-_.]的，否则构建不会成功 -->
+					<!-- 详见：https://github.com/spotify/docker-maven-plugin    Invalid repository name ... only [a-z0-9-_.] are allowed-->
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<!-- 指定Dockerfile所在的路径 -->
+					<dockerDirectory>${project.basedir}/docker</dockerDirectory>
+					<dockerHost>http://47.97.118.22:6500</dockerHost>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>
+			<!--添加配置跳过测试-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
